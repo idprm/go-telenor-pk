@@ -1,0 +1,5 @@
+/logs
+app.env
+.env
+go-telenor-pk
+secret.yaml
