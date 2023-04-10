@@ -87,8 +87,12 @@ func mapUrls(cfg *config.Secret, db *sql.DB, mdb *mongo.Collection, logger *logg
 	 */
 	router.Get("dreamleague", incomingHandler.DreamleagueSubPage)
 	router.Get("dreamleague/unsub", incomingHandler.DreamleagueUnsubPage)
-
 	router.Post("report/arpu", incomingHandler.ArpuTool)
+
+	v1 := router.Group("v1")
+
+	v1.Post("mo", incomingHandler.MessageOriginated)
+	v1.Post("dr", incomingHandler.DeliveryReport)
 
 	return router
 }

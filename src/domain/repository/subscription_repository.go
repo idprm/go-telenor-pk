@@ -15,9 +15,9 @@ const (
 	queryCountSubscription       = "SELECT COUNT(*) as count FROM subscriptions WHERE service_id = $1 AND msisdn = $2"
 	queryCountActiveSubscription = "SELECT COUNT(*) as count FROM subscriptions WHERE service_id = $1 AND msisdn = $2 AND is_active = true"
 	querySelectSubscription      = "SELECT id, service_id, msisdn, channel, adnet, pub_id, aff_sub, latest_subject, latest_status, amount, trial_at, renewal_at, unsub_at, charge_at, retry_at, success, ip_address, total_firstpush, total_renewal, total_amount_firstpush, total_amount_renewal, is_trial, is_retry, is_active FROM subscriptions WHERE service_id = $1 AND msisdn = $2"
-	querySelectPopulateRenewal   = "SELECT id, msisdn, service_id, channel, ip_address FROM subscriptions WHERE renewal_at IS NOT NULL AND DATE(renewal_at) <= DATE(NOW()) AND is_active = true AND deleted_at IS null ORDER BY success DESC"
-	querySelectPopulateRetry     = "SELECT id, msisdn, service_id, channel, ip_address FROM subscriptions WHERE renewal_at IS NOT NULL AND DATE(renewal_at) = DATE(NOW() + interval '1 day') AND is_retry = true AND is_active = true AND deleted_at IS null ORDER BY success DESC"
-	querySelectPopulateReminder  = "SELECT id, msisdn, service_id, channel, ip_address FROM subscriptions WHERE renewal_at IS NOT NULL AND DATE(renewal_at) = DATE(NOW() + interval '2 day') AND is_retry = false AND is_active = true AND deleted_at IS null ORDER BY success DESC"
+	querySelectPopulateRenewal   = "SELECT id, msisdn, service_id, channel, ip_address FROM subscriptions WHERE renewal_at IS NOT NULL AND DATE(renewal_at) <= DATE(NOW()) AND is_active = true ORDER BY success DESC"
+	querySelectPopulateRetry     = "SELECT id, msisdn, service_id, channel, ip_address FROM subscriptions WHERE renewal_at IS NOT NULL AND DATE(renewal_at) = DATE(NOW() + interval '1 day') AND is_retry = true AND is_active = true ORDER BY success DESC"
+	querySelectPopulateReminder  = "SELECT id, msisdn, service_id, channel, ip_address FROM subscriptions WHERE renewal_at IS NOT NULL AND DATE(renewal_at) = DATE(NOW() + interval '2 day') AND is_retry = false AND is_active = true ORDER BY success DESC"
 )
 
 type SubscriptionRepository struct {

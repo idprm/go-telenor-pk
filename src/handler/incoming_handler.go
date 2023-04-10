@@ -57,6 +57,14 @@ func (h *IncomingHandler) OTPVerify(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "OK"})
 }
 
+func (h *IncomingHandler) MessageOriginated(c *fiber.Ctx) error {
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "OK"})
+}
+
+func (h *IncomingHandler) DeliveryReport(c *fiber.Ctx) error {
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "OK"})
+}
+
 func (h *IncomingHandler) ArpuTool(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "OK"})
 }

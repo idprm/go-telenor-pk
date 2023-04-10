@@ -30,7 +30,9 @@ func moProcessor(cfg *config.Secret, db *sql.DB, logger *logger.Logger, wg *sync
 	subscriptionRepo := repository.NewSubscriptionRepository(db)
 	subscriptionService := services.NewSubscriptionService(subscriptionRepo)
 
-	moHandler := handler.MOHandler(cfg, logger, serviceService)
+	moHandler := handler.NewMOHandler(cfg, logger, serviceService, subscriptionService)
+
+	moHandler.IsActive()
 
 	wg.Done()
 }
@@ -42,6 +44,11 @@ func drProcessor(cfg *config.Secret, db *sql.DB, logger *logger.Logger, wg *sync
 
 	subscriptionRepo := repository.NewSubscriptionRepository(db)
 	subscriptionService := services.NewSubscriptionService(subscriptionRepo)
+
+	transactionRepo := repository.NewTransactionRepository(db)
+	transactionService := services.NewTransactionService(transactionRepo)
+
+	handler.NewDRHandler(cfg, logger, serviceService, subscriptionService, transactionService)
 
 	wg.Done()
 }

@@ -17,7 +17,8 @@ func NewMOHandler(
 	cfg *config.Secret,
 	logger *logger.Logger,
 	serviceService services.IServiceService,
-	subscriptionService services.ISubscriptionService) *MOHandler {
+	subscriptionService services.ISubscriptionService,
+) *MOHandler {
 
 	return &MOHandler{
 		cfg:                 cfg,
