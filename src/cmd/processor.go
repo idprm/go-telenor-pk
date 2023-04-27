@@ -11,7 +11,25 @@ import (
 	"github.com/idprm/go-telenor-pk/src/services"
 )
 
-func moProcessor(cfg *config.Secret, db *sql.DB, logger *logger.Logger, wg *sync.WaitGroup, message []byte) {
+type Processor struct {
+	cfg    *config.Secret
+	db     *sql.DB
+	logger *logger.Logger
+}
+
+func NewProcessor(
+	cfg *config.Secret,
+	db *sql.DB,
+	logger *logger.Logger,
+) *Processor {
+	return &Processor{
+		cfg:    cfg,
+		db:     db,
+		logger: logger,
+	}
+}
+
+func (p *Processor) MO(wg *sync.WaitGroup, message []byte) {
 	/**
 	 * -. Check Valid Prefix
 	 * -. Check VIP Prefix
@@ -24,31 +42,31 @@ func moProcessor(cfg *config.Secret, db *sql.DB, logger *logger.Logger, wg *sync
 	 * -. Save History
 	 */
 
-	serviceRepo := repository.NewServiceRepository(db)
+	serviceRepo := repository.NewServiceRepository(p.db)
 	serviceService := services.NewServiceService(serviceRepo)
 
-	subscriptionRepo := repository.NewSubscriptionRepository(db)
+	subscriptionRepo := repository.NewSubscriptionRepository(p.db)
 	subscriptionService := services.NewSubscriptionService(subscriptionRepo)
 
-	moHandler := handler.NewMOHandler(cfg, logger, serviceService, subscriptionService)
+	moHandler := handler.NewMOHandler(p.cfg, p.logger, serviceService, subscriptionService)
 
 	moHandler.IsActive()
 
 	wg.Done()
 }
 
-func drProcessor(cfg *config.Secret, db *sql.DB, logger *logger.Logger, wg *sync.WaitGroup, message []byte) {
+func (p *Processor) DR(wg *sync.WaitGroup, message []byte) {
 
-	serviceRepo := repository.NewServiceRepository(db)
+	serviceRepo := repository.NewServiceRepository(p.db)
 	serviceService := services.NewServiceService(serviceRepo)
 
-	subscriptionRepo := repository.NewSubscriptionRepository(db)
+	subscriptionRepo := repository.NewSubscriptionRepository(p.db)
 	subscriptionService := services.NewSubscriptionService(subscriptionRepo)
 
-	transactionRepo := repository.NewTransactionRepository(db)
+	transactionRepo := repository.NewTransactionRepository(p.db)
 	transactionService := services.NewTransactionService(transactionRepo)
 
-	handler.NewDRHandler(cfg, logger, serviceService, subscriptionService, transactionService)
+	handler.NewDRHandler(p.cfg, p.logger, serviceService, subscriptionService, transactionService)
 
 	wg.Done()
 }

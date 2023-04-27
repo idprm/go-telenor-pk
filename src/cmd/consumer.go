@@ -52,13 +52,15 @@ var consumerMOCmd = &cobra.Command{
 		// Loop forever listening incoming data
 		forever := make(chan bool)
 
+		processor := NewProcessor(cfg, db, logger)
+
 		// Set into goroutine this listener
 		go func() {
 
 			// Loop every incoming data
 			for d := range messagesData {
 				wg.Add(1)
-				moProcessor(cfg, db, logger, &wg, d.Body)
+				processor.MO(&wg, d.Body)
 				wg.Wait()
 
 				// Manual consume queue
@@ -115,21 +117,20 @@ var consumerDRCmd = &cobra.Command{
 		// Loop forever listening incoming data
 		forever := make(chan bool)
 
+		processor := NewProcessor(cfg, db, logger)
+
 		// Set into goroutine this listener
 		go func() {
 
 			// Loop every incoming data
 			for d := range messagesData {
-
 				wg.Add(1)
-				drProcessor(cfg, db, logger, &wg, d.Body)
+				processor.DR(&wg, d.Body)
 				wg.Wait()
 
 				// Manual consume queue
 				d.Ack(false)
-
 			}
-
 		}()
 
 		fmt.Println("[*] Waiting for data...")
